@@ -44,6 +44,21 @@ expoert async function getChatHistory(){
     try{
         const token = localStorage.getItem('authToken')
 
-        
+        const response = await fetch(`${API_URL}/api/chat/hisotry`,{
+            method:'GET',
+            headers:{
+                'Authorization': `Bearer ${token}`
+            }
+        })
+
+        if (!response.ok){
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        return await response.json();
+
+    } catch (error){
+        console.error("Error fetching chat history:",error)
+        throw error
     }
 }
