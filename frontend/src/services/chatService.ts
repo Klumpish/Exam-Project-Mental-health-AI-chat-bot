@@ -40,25 +40,24 @@ export async function sendMessageToAI(messageText: string) {
 }
 
 // function to fetch chat history
-expoert async function getChatHistory(){
-    try{
-        const token = localStorage.getItem('authToken')
+export async function getChatHistory() {
+	try {
+		const token = localStorage.getItem('authToken');
 
-        const response = await fetch(`${API_URL}/api/chat/hisotry`,{
-            method:'GET',
-            headers:{
-                'Authorization': `Bearer ${token}`
-            }
-        })
+		const response = await fetch(`${API_URL}/api/chat/hisotry`, {
+			method: 'GET',
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 
-        if (!response.ok){
-            throw new Error(`HTTP error! status: ${response.status}`)
-        }
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
 
-        return await response.json();
-
-    } catch (error){
-        console.error("Error fetching chat history:",error)
-        throw error
-    }
+		return await response.json();
+	} catch (error) {
+		console.error('Error fetching chat history:', error);
+		throw error;
+	}
 }

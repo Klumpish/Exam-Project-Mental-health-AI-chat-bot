@@ -1,11 +1,8 @@
 // this page allows users to write and save journal entries
 // users can reflect on their thoughts and feelings
-
+'use client';
+import { getJournalEntries, saveJournalEntry } from '@/services/journalService';
 import { useState, useEffect } from 'react';
-import {
-	saveJournalEntry,
-	getJournalEntries,
-} from '../../services/journalService';
 
 type entry = {
 	id: string;
