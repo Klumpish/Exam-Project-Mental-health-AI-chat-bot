@@ -1,6 +1,7 @@
 // this component allows users to log their daily mood
 // users select a mood from 1(very bad) to 5 (very good)
 
+import { saveMoodLog } from '@/services/moodService';
 import { useState } from 'react';
 
 export default function MoodTracker() {
