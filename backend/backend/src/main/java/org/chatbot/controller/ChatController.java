@@ -1,6 +1,7 @@
 package org.chatbot.controller;
 
-import org.apache.logging.log4j.message.Message;
+import org.chatbot.model.Message;
+import org.chatbot.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,8 @@ public class ChatController {
      * Receives: { "message": "user's message text", "timestamp": "ISO date" }
      * Returns: { "text": "AI response", "timestamp": "ISO date" }
      */
-    @PostMapping public ResponseEntity<?> sendMessage(
-      @RequestBody Map<String, String> payload) {
+    @PostMapping
+    public ResponseEntity<?> sendMessage(@RequestBody Map<String, String> payload) {
         try {
             //Extract msg text from request body
             String userMsg = payload.get("userMsg");
@@ -59,7 +60,8 @@ public class ChatController {
     }
 
 
-    @GetMapping("/history") public ResponseEntity<?> getChatHistory() {
+    @GetMapping("/history")
+    public ResponseEntity<?> getChatHistory() {
         try {
             //Get user ID from authentication context
             Long userId = 1L; // TODO: get from authentication
