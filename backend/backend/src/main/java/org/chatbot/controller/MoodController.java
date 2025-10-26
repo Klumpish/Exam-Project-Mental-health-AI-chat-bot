@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * this controller handles all mood tracking HTTP requests
@@ -101,11 +102,14 @@ public class MoodController {
     public ResponseEntity<?> getTodaysMood() {
         try {
             long userId = 1L; // TODO: get from authentication
+            Optional<MoodLog> todaysMood = moodService.getTodaysMood(userId);
 
-            return moodService.getTodaysMood(userId)
-                              .map(ResponseEntity::ok)
-                              .orElse(ResponseEntity.ok(
-                                Map.of("message", "No mood logged today")));
+            if (todaysMood.isPresent()) {
+                return ResponseEntity.ok(todaysMood.get());
+            } else {
+                return ResponseEntity.ok(Map.of("message", "No mood logged today"));
+            }
+
 
         } catch (Exception e) {
             System.err.println("Error fetching today's mood: " + e.getMessage());
@@ -113,6 +117,21 @@ public class MoodController {
                                  .body(
                                    Map.of("error", "Failed to fetch today's mood"));
         }
+//        try {
+//            long userId = 1L; // TODO: get from authentication
+//
+//            return moodService.getTodaysMood(userId)
+//                              .map(ResponseEntity::ok)
+//                              .orElse(ResponseEntity.ok(
+//                                Map.of("message", "No mood logged today")));
+//
+//        } catch (Exception e) {
+//            System.err.println("Error fetching today's mood: " + e.getMessage());
+//            return ResponseEntity.internalServerError()
+//                                 .body(
+//                                   Map.of("error", "Failed to fetch today's
+//                                   mood"));
+//        }
 
     }
 
