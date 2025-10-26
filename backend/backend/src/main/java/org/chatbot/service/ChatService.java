@@ -1,18 +1,21 @@
 package org.chatbot.service;
 
 
-import org.apache.logging.log4j.message.Message;
+import org.chatbot.model.Message;
+import org.chatbot.repository.MessageRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 
-import java.net.http.HttpHeaders;
+import java.net.http.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 /**
  * This service handles the business logic for chat funtionality
