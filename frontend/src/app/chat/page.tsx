@@ -3,8 +3,11 @@
 'use client';
 import Chatbox from '@/components/Chatbox';
 import MessageBubble from '@/components/MessageBubble';
+import Navigation from '@/components/Navigation';
+import { sendMessageToAI } from '@/services/chatService';
 import { timeStamp } from 'console';
 import { useState, useEffect, useRef } from 'react';
+
 export default function ChatPage() {
 	// type for message objects
 	type Message = {
@@ -73,43 +76,46 @@ export default function ChatPage() {
 	};
 
 	return (
-		<div className="min-h-screen  p-4">
-			{/* <div className="min-h-screen bg-gray-50 p-4"> */}
-			<div className="max-w-4xl mx-auto">
-				<h1 className="text-3xl font-bold md-4">Chat with AI Support</h1>
+		<>
+			<Navigation />
+			<div className="min-h-screen bg-gray-50  p-4">
+				{/* <div className="min-h-screen bg-gray-50 p-4"> */}
+				<div className="max-w-4xl mx-auto">
+					<h1 className="text-3xl font-bold md-4">Chat with AI Support</h1>
 
-				{/* Disclaimer msg important! */}
-				{/* #TODO check the ' in "if you're" */}
-				<div className="bg-blue-100 border-l-4 border-blue-500 p-4 mb-4">
-					<p className="text-sm">
-						This Chatbot is not a replacement for professional mental health
-						support. If you&apos;re in crisis, please contact emergency services
-						or a crisis hotline.
-					</p>
+					{/* Disclaimer msg important! */}
+					{/* #TODO check the ' in "if you're" */}
+					<div className="bg-blue-100 border-l-4 border-blue-500 p-4 mb-4">
+						<p className="text-sm">
+							This Chatbot is not a replacement for professional mental health
+							support. If you&apos;re in crisis, please contact emergency
+							services or a crisis hotline.
+						</p>
+					</div>
+
+					{/* msg container */}
+					<div className="bg-white rounded-lg shadow-lg p-4 h-96 overflow-y-auto mb-4">
+						{messages.map((message, index) => (
+							<MessageBubble
+								key={index}
+								text={message.text}
+								sender={message.sender}
+								timestamp={message.timestamp}
+							/>
+						))}
+						{isLoading && (
+							<div className="text-gray-500-italic">AI is typing...</div>
+						)}
+						<div ref={messagesEndRef} />
+					</div>
+
+					{/* box for typing msg */}
+					<Chatbox
+						onSendMessage={handleSendMessage}
+						disabled={isLoading}
+					/>
 				</div>
-
-				{/* msg container */}
-				<div className="bg-white rounded-lg shadow-lg p-4 h-96 overflow-y-auto mb-4">
-					{messages.map((message, index) => (
-						<MessageBubble
-							key={index}
-							text={message.text}
-							sender={message.sender}
-							timestamp={message.timestamp}
-						/>
-					))}
-					{isLoading && (
-						<div className="text-gray-500-italic">AI is typing...</div>
-					)}
-					<div ref={messagesEndRef} />
-				</div>
-
-				{/* box for typing msg */}
-				<Chatbox
-					onSendMessage={handleSendMessage}
-					disabled={isLoading}
-				/>
 			</div>
-		</div>
+		</>
 	);
 }

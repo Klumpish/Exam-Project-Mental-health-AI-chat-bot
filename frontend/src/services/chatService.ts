@@ -44,7 +44,7 @@ export async function getChatHistory() {
 	try {
 		const token = localStorage.getItem('authToken');
 
-		const response = await fetch(`${API_URL}/api/chat/hisotry`, {
+		const response = await fetch(`${API_URL}/api/chat/history`, {
 			method: 'GET',
 			headers: {
 				Authorization: `Bearer ${token}`,
