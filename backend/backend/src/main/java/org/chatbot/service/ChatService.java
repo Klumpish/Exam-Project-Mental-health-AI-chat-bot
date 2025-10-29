@@ -1,6 +1,7 @@
 package org.chatbot.service;
 
 
+import org.chatbot.AiService.GPT4ALLService;
 import org.chatbot.model.Message;
 import org.chatbot.repository.MessageRepository;
 
@@ -32,32 +33,39 @@ public class ChatService {
     @Autowired
     private SentimentService sentimentService;
 
-    //get openAI API Key from application.properties
-    @Value("${openai.api.key}")
-    private String openaiApiKey;
+    //using GPT4ALL instead of OpenAI
+    @Autowired
+    private GPT4ALLService gpt4ALLService;
+
+    // get openAI API Key from application.properties
+    // @Value("${openai.api.key}")
+    // private String openaiApiKey;
 
     // OpenAI API endpoint TODO:make sure the URL is valid they are doing updates
-    private static final String OPENAI_API_URL =
-      "https://api.openai" + ".com/v1/chat/completions";
+    //    private static final String OPENAI_API_URL =
+    //      "https://api.openai" + ".com/v1/chat/completions";
 
     /**
      * Process a user msg: send to AI, analyze sentiment, save to database
      * @param userMessage the message text from the user
      * @return AI's response text
      */
-    public String processMessage(String userMessage) {
+
+    //TODO for testing we are accepting userId
+    public String processMessage(String userMessage, Long userId) {
         try {
             // step 1: Check msg for risk/crisis indicators
             boolean isRisky = sentimentService.detectRisk(userMessage);
 
-            // step 2: Get AI response from OpenAI
+            // step 2: Get AI response from GPT4All
             String aiResponse = getAIResponse(userMessage, isRisky);
 
             // step 3: save both messages to database
-            saveMessage(userMessage, "user");
-            saveMessage(aiResponse, "ai");
+            saveMessage(userMessage, "user", userId);
+            saveMessage(aiResponse, "ai", userId);
 
             return aiResponse;
+
         } catch (Exception e) {
             System.err.println("Error processing message: " + e.getMessage());
             // return a fallback message
@@ -67,15 +75,17 @@ public class ChatService {
     }
 
     /**
-     * Call OpenAI API to get AI response
+     * Get AI response using GPT4All local model
      * @param userMessage the user's msg
      * @param isRisky whether the msg contains risk indicators
      * @return AI' response
      */
     private String getAIResponse(String userMessage, boolean isRisky) {
         try {
-            // Create REST template for HTTP requests
-            RestTemplate restTemplate = new RestTemplate();
+            // Check if GPT4All is ready
+            if (!gpt4ALLService.isReady()) {
+                return "I'm still loading. Please wait a moment and try again.";
+            }
 
             // Set up headers with API key
             HttpHeaders headers = new HttpHeaders();
@@ -83,16 +93,21 @@ public class ChatService {
             headers.setBearerAuth(openaiApiKey);
 
             //build the request body with system promt and user msg
-            String systemPrompt = isRisky ? "You are a compassionate mental health" +
-              " support assistant. The user may be in distress. Respond with " +
-              "empathy and suggest professional resources if needed. Never provide" +
-              " medical advice." : "You are a compassionate mental health support " +
-              "assistant. Respond with empathy and understanding. Never provide " +
-              "medical advice.";
+            String systemPrompt = isRisky ? """
+                                            You are a compassionate mental health support assistant.
+                                            The user may be in emotional distress.
+                                            Respond briefly with empathy and understanding.
+                                            If appropriate, suggest professional mental health resources or reaching out to trusted people.
+                                            Never provide medical advice. Limit your reply to 100 words.
+                                            """ : """
+                                                  You are a compassionate mental health support assistant.
+                                                  Respond briefly with empathy and understanding.
+                                                  Never provide medical advice. Limit your reply to 100 words.
+                                                  """;
 
             //TODO make sure to check correct max token,temp and model
-            Map<String, Object> requestBody = Map.of("model", "gpt-4", "messages",
-              List.of(Map.of("role", "system", "content", systemPrompt),
+            Map<String, Object> requestBody = Map.of("model", "gpt-3.5-turbo",
+              "messages", List.of(Map.of("role", "system", "content", systemPrompt),
                 Map.of("role", "user", "content", userMessage)), "max_tokens", 150,
               "temperature", 0.7);
 
@@ -126,11 +141,14 @@ public class ChatService {
      * @param text the msg text
      * @param sender either "user" or "Ai"
      */
-    private void saveMessage(String text, String sender) {
+    //TODO accept userId while testing
+    private void saveMessage(String text, String sender, Long userId) {
         Message message = new Message();
         message.setText(text);
         message.setSender(sender);
         message.setTimestamp(LocalDateTime.now());
+        //todo while tesitng
+        message.setUserId(userId);
 
         //todo remember to add authentication to userId
 
