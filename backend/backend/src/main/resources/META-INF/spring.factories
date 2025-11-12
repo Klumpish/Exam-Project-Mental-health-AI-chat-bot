@@ -1,0 +1,3 @@
+# Register the DotenvConfig to run at startup
+#org.springframework.context.ApplicationContextInitializer=org.chatbot.config.DotenvConfig
+org.springframework.context.ApplicationContextInitializer=org.chatbot.config.DotenvConfig
