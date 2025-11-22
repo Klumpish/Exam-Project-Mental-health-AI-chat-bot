@@ -1,21 +1,18 @@
 package org.chatbot.service;
 
 
-import org.chatbot.AiService.GPT4ALLService;
+import org.chatbot.AiService.GPT4ALLApiService;
+
 import org.chatbot.model.Message;
 import org.chatbot.repository.MessageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.*;
 
-import java.net.http.*;
+import org.springframework.stereotype.Service;
+
+
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -35,15 +32,8 @@ public class ChatService {
 
     //using GPT4ALL instead of OpenAI
     @Autowired
-    private GPT4ALLService gpt4ALLService;
+    private GPT4ALLApiService gpt4ALLApiService;
 
-    // get openAI API Key from application.properties
-    // @Value("${openai.api.key}")
-    // private String openaiApiKey;
-
-    // OpenAI API endpoint TODO:make sure the URL is valid they are doing updates
-    //    private static final String OPENAI_API_URL =
-    //      "https://api.openai" + ".com/v1/chat/completions";
 
     /**
      * Process a user msg: send to AI, analyze sentiment, save to database
@@ -67,15 +57,17 @@ public class ChatService {
             return aiResponse;
 
         } catch (Exception e) {
-            System.err.println("Error processing message: " + e.getMessage());
+            System.err.println(
+              "Error processing message: " + e.getMessage());
             // return a fallback message
-            return "I'm having trouble connecting right now. Please try again in a" +
-              " moment.";
+            return
+              "I'm having trouble connecting right now. Please try again" +
+                " in a" + " moment.";
         }
     }
 
     /**
-     * Get AI response using GPT4All local model
+     * Get AI response using GPT4All API
      * @param userMessage the user's msg
      * @param isRisky whether the msg contains risk indicators
      * @return AI' response
@@ -83,14 +75,13 @@ public class ChatService {
     private String getAIResponse(String userMessage, boolean isRisky) {
         try {
             // Check if GPT4All is ready
-            if (!gpt4ALLService.isReady()) {
-                return "I'm still loading. Please wait a moment and try again.";
+            if (!gpt4ALLApiService.isApiAvailable()) {
+                return
+                  "⚠️ AI service is not available. Please make sure " +
+                    "GPT4All is running with the API server enabled " +
+                    "(Settings > Application > Enable Local API Server).";
             }
 
-            // Set up headers with API key
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(openaiApiKey);
 
             //build the request body with system promt and user msg
             String systemPrompt = isRisky ? """
@@ -104,34 +95,28 @@ public class ChatService {
                                                   Respond briefly with empathy and understanding.
                                                   Never provide medical advice. Limit your reply to 100 words.
                                                   """;
+            //Generate response using GPT4All
+            String aiResponse = gpt4ALLApiService.generateResponse(
+              userMessage, systemPrompt);
 
-            //TODO make sure to check correct max token,temp and model
-            Map<String, Object> requestBody = Map.of("model", "gpt-3.5-turbo",
-              "messages", List.of(Map.of("role", "system", "content", systemPrompt),
-                Map.of("role", "user", "content", userMessage)), "max_tokens", 150,
-              "temperature", 0.7);
+            //if response indicates crisis, add resources
+            if (isRisky) {
+                aiResponse +=
+                  "\n\n" + sentimentService.getCrisisResources();
+            }
 
-            //create HTTP entity with headers and body
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody,
-              headers);
+            return aiResponse;
 
-            // Send POST request to OpenAI
-            ResponseEntity<Map> response = restTemplate.exchange(OPENAI_API_URL,
-              HttpMethod.POST, entity, Map.class);
 
-            // Extract AI response from JSON
-            Map<String, Object> responseBody = response.getBody();
-            List<Map<String, Object>> choices =
-              (List<Map<String, Object>>) responseBody.get(
-              "choices");
-            Map<String, Object> firstChoice = choices.get(0);
-            Map<String, String> messages = (Map<String, String>) firstChoice.get(
-              "messages");
-
-            return messages.get("content");
         } catch (Exception e) {
-            System.err.println("Error calling OpenAI API: " + e.getMessage());
-            throw new RuntimeException("Failed to get AI response");
+            System.err.println(
+              "Error getting AI response: " + e.getMessage());
+            e.printStackTrace();
+            return "I'm here to listen. I'm having a brief technical " +
+              "difficulty, but " +
+              "please know that your wellbeing matters. " +
+              "If you're in crisis, please reach out to a crisis " +
+              "hotline or " + "emergency services.";
         }
     }
 

@@ -22,7 +22,7 @@ export default function Navigation() {
 	return (
 		<>
 			{/* top navigation bar */}
-			<nav className="bg-white shadow-md">
+			<nav className="bg-pink-200 shadow-md">
 				<div className="max-w-7xl mx-auto px-4">
 					<div className="flex justify-between items-center h-16">
 						{/* Logo */}
@@ -54,8 +54,10 @@ export default function Navigation() {
 							</Link>
 							<button
 								onClick={handleLogout}
-								className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-								Logout
+								className="px-0 py-0 rounded-lg">
+								<span className="px-4 py-2 rounded-lg cursor-pointer transition-colors hover:bg-gray-100">
+									🛑 Logout
+								</span>
 							</button>
 						</div>
 

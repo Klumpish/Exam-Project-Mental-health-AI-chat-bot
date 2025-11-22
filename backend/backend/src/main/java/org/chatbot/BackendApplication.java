@@ -15,6 +15,7 @@ public class BackendApplication {
      * @param args
      */
     public static void main(String[] args) {
+
         SpringApplication.run(BackendApplication.class, args);
         System.out.println(
           "Mental Health Chatbot Backend is running on http://localhost:8080");

@@ -36,16 +36,29 @@
     </properties>
     <dependencies>
 
+        <!-- dotenv-java for loading .env files -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
         <!-- Spring Boot Data JPA - for database operations -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- Spring Boot Security - for auth -->
+        <!--        Spring Boot Security - for auth-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <!--        JWT for token-based authentication-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
         </dependency>
 
         <!-- Spring Boot Web - using for REST API -->
@@ -61,12 +74,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- JWT for token-based authentication -->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
-        </dependency>
 
         <!-- Validation - for input validation -->
         <dependency>
@@ -105,6 +112,7 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        
     </dependencies>
 
     <build>
