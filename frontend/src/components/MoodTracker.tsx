@@ -4,16 +4,19 @@
 import { saveMoodLog } from '@/services/moodService';
 import { useState } from 'react';
 
-export default function MoodTracker() {
-	// state for selecting mood (1-5)
-	// TODO checkback if
-	const [selectedMood, setSelectedMood] = useState<number | null>(null);
+type MoodTrackerProps = {
+	onMoodLogged: () => void;
+};
 
+export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
+	// state for selecting mood (1-5)
+	const [selectedMood, setSelectedMood] = useState<number | null>(null);
+	const [notes, setNotes] = useState('');
+	const [successMessage, setSuccessMessage] = useState('');
 	// state for saving status
 	const [isSaving, setIsSaving] = useState(false);
 
 	// mood options with emojis
-	// TODO find better emojis
 	const moodOptitons = [
 		{ value: 1, emoji: '😢', label: 'Very Bad' },
 		{ value: 2, emoji: '😕', label: 'Bad' },
@@ -35,10 +38,19 @@ export default function MoodTracker() {
 			// save mood to backend
 			await saveMoodLog(selectedMood);
 
-			alert('Mood Logged successfully');
+			setSuccessMessage('Mood Logged successfully');
 
 			// reset selection
 			setSelectedMood(null);
+			setNotes('');
+
+			//notify parent component
+			if (onMoodLogged) {
+				onMoodLogged();
+			}
+
+			//clearn success message
+			setTimeout(() => setSuccessMessage(''), 4000);
 		} catch (error) {
 			console.error('Error saving mood:', error);
 			alert('Failed to save mood. Please try again');
@@ -51,6 +63,11 @@ export default function MoodTracker() {
 		<div className="bg-white rounded-lg shadow-lg p-6">
 			<h2 className="text-2xl font-bold mb-4">How are you feeling today?</h2>
 
+			{successMessage && (
+				<div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">
+					{successMessage}
+				</div>
+			)}
 			{/* Mood selection buttons */}
 			<div className="flex justify-between mb-6">
 				{moodOptitons.map((mood) => (
@@ -64,12 +81,35 @@ export default function MoodTracker() {
 				))}
 			</div>
 
+			{/* Optional notes */}
+			{selectedMood && (
+				<div className="mb-4">
+					<label className="block text-sm font-medium text-gray-700 mb-2">
+						Add a note (optional)
+					</label>
+					<textarea
+						value={notes}
+						onChange={(e) => setNotes(e.target.value)}
+						placeholder="What's contributing to your mood today?"
+						className="w-full px-4 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+						rows={3}
+					/>
+				</div>
+			)}
+
 			{/* save button */}
 			<button
 				onClick={handleSaveMood}
 				disabled={!selectedMood || isSaving}
 				className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed">
-				{isSaving ? 'Saving...' : 'Log Mood'}
+				{isSaving ? (
+					<>
+						<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+						Saving...
+					</>
+				) : (
+					'Log Mood'
+				)}
 			</button>
 		</div>
 	);

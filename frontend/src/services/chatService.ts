@@ -4,8 +4,6 @@
 // get backend URL from env variable
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
-// func to send a msg to the AI and get a response
-
 export async function sendMessageToAI(messageText: string) {
 	try {
 		// get auth token from localStorage(if user is logged in)
