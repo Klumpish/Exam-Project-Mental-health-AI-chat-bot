@@ -4,8 +4,8 @@
 import Chatbox from '@/components/Chatbox';
 import MessageBubble from '@/components/MessageBubble';
 import Navigation from '@/components/Navigation';
-import { sendMessageToAI } from '@/services/chatService';
-import { timeStamp } from 'console';
+import { getChatHistory, sendMessageToAI } from '@/services/chatService';
+import { error, timeStamp } from 'console';
 import { useState, useEffect, useRef } from 'react';
 
 export default function ChatPage() {
@@ -22,6 +22,8 @@ export default function ChatPage() {
 	// state to track if we are waiting for AI response
 	const [isLoading, setIsLoading] = useState(false);
 
+	const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+
 	// reference to scroll to bottom of chat when new msg arrive
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -34,6 +36,31 @@ export default function ChatPage() {
 	useEffect(() => {
 		scrollToBottom();
 	}, [messages]);
+
+	// func to load previous chat history
+	const loadChatHistory = async () => {
+		try {
+			setIsLoadingHistory(true);
+			console.log('Loading chat history...');
+
+			const history = await getChatHistory();
+
+			//backend format to frontend format
+			const formattedMessages: Message[] = history.map((msg: Message) => ({
+				text: msg.text,
+				sender: msg.sender,
+				timestamp: new Date(msg.timestamp),
+			}));
+
+			setMessages(formattedMessages);
+			console.log(`loaded ${formattedMessages.length} messages`);
+		} catch (error) {
+			console.error('Error loading chat history: ', error);
+			//dont show error to user, just start with empty chat
+		} finally {
+			setIsLoadingHistory(false);
+		}
+	};
 
 	//func that handles user sending msg
 	const handleSendMessage = async (messageText: string) => {
@@ -77,11 +104,24 @@ export default function ChatPage() {
 
 	return (
 		<>
-			<Navigation />
 			<div className="min-h-screen bg-gray-50  p-4">
-				{/* <div className="min-h-screen bg-gray-50 p-4"> */}
+				<Navigation />
 				<div className="max-w-4xl mx-auto">
-					<h1 className="text-3xl font-bold md-4">Chat with AI Support</h1>
+					<div className="flex justify-between items-center mb-4">
+						<h1 className="text-3xl font-bold md-4">Chat with AI Support</h1>
+						{/* Clear History Button */}
+						{messages.length > 0 && (
+							<button
+								onClick={() => {
+									if (confirm('Are you sure you want to clear this chat?')) {
+										setMessages([]);
+									}
+								}}
+								className="text-sm text-red-600 hover:text-red-800">
+								Clear Chat
+							</button>
+						)}
+					</div>
 
 					{/* Disclaimer msg important! */}
 					{/* #TODO check the ' in "if you're" */}
@@ -95,24 +135,60 @@ export default function ChatPage() {
 
 					{/* msg container */}
 					<div className="bg-white rounded-lg shadow-lg p-4 h-96 overflow-y-auto mb-4">
-						{messages.map((message, index) => (
-							<MessageBubble
-								key={index}
-								text={message.text}
-								sender={message.sender}
-								timestamp={message.timestamp}
-							/>
-						))}
-						{isLoading && (
-							<div className="text-gray-500-italic">AI is typing...</div>
+						{isLoadingHistory ? (
+							// Loading state
+							<div className="flex items-center justify-center h-full">
+								<div className="text-center">
+									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+									<p className="text-gray-500">Loading chat history...</p>
+								</div>
+							</div>
+						) : messages.length === 0 ? (
+							// Empty state
+							<div className="flex items-center justify-center h-full">
+								<div className="text-center text-gray-500">
+									<p className="text-lg mb-2">👋 Welcome!</p>
+									<p>Start a conversation by typing a message below.</p>
+								</div>
+							</div>
+						) : (
+							// Messages
+							<>
+								{messages.map((message, index) => (
+									<MessageBubble
+										key={index}
+										text={message.text}
+										sender={message.sender}
+										timestamp={message.timestamp}
+									/>
+								))}
+
+								{/* Loading indicator while AI is thinking */}
+								{isLoading && (
+									<div className="flex mb-4">
+										<div className="bg-gray-200 rounded-lg px-4 py-3">
+											<div className="flex space-x-2">
+												<div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+												<div
+													className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+													style={{ animationDelay: '0.1s' }}></div>
+												<div
+													className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+													style={{ animationDelay: '0.2s' }}></div>
+											</div>
+										</div>
+									</div>
+								)}
+
+								<div ref={messagesEndRef} />
+							</>
 						)}
-						<div ref={messagesEndRef} />
 					</div>
 
 					{/* box for typing msg */}
 					<Chatbox
 						onSendMessage={handleSendMessage}
-						disabled={isLoading}
+						disabled={isLoading || isLoadingHistory}
 					/>
 				</div>
 			</div>

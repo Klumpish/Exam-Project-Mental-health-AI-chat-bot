@@ -84,17 +84,41 @@ public class ChatService {
 
 
             //build the request body with system promt and user msg
-            String systemPrompt = isRisky ? """
-                                            You are a compassionate mental health support assistant.
-                                            The user may be in emotional distress.
-                                            Respond briefly with empathy and understanding.
-                                            If appropriate, suggest professional mental health resources or reaching out to trusted people.
-                                            Never provide medical advice. Limit your reply to 100 words.
-                                            """ : """
-                                                  You are a compassionate mental health support assistant.
-                                                  Respond briefly with empathy and understanding.
-                                                  Never provide medical advice. Limit your reply to 100 words.
-                                                  """;
+            String systemPrompt = isRisky ? "You are a supportive mental" +
+              " health assistant. Respond briefly with empathy in 2-3 " +
+              "sentences. Suggest professional help if needed." : "You " +
+              "are a supportive mental health assistant. Respond briefly" +
+              " with empathy in 2-3 sentences.";
+
+            //TODO: use later on prod
+//                                            """
+//                                            You are a compassionate
+//                                            mental health support
+//                                            assistant.
+//                                            The user may be in
+//                                            emotional distress.
+//                                            Respond briefly with
+//                                            empathy and understanding.
+//                                            If appropriate, suggest
+//                                            professional mental health
+//                                            resources or reaching out
+//                                            to trusted people.
+//                                            Never provide medical
+//                                            advice. Limit your reply
+//                                            to 100 words.
+//                                            """ : """
+//                                                  You are a
+//                                                  compassionate mental
+//                                                  health support
+//                                                  assistant.
+//                                                  Respond briefly with
+//                                                  empathy and
+//                                                  understanding.
+//                                                  Never provide
+//                                                  medical advice.
+//                                                  Limit your reply to
+//                                                  100 words.
+//                                                  """;
             //Generate response using GPT4All
             String aiResponse = gpt4ALLApiService.generateResponse(
               userMessage, systemPrompt);

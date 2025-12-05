@@ -1,6 +1,7 @@
 // this page allows users to write and save journal entries
 // users can reflect on their thoughts and feelings
 'use client';
+import Navigation from '@/components/Navigation';
 import { getJournalEntries, saveJournalEntry } from '@/services/journalService';
 import { useState, useEffect } from 'react';
 
@@ -71,8 +72,10 @@ export default function JournalPage() {
 
 	return (
 		<div className="min-h-screen bg-gray-50 p-4">
+			<Navigation />
+
 			<div className="max-w-4xl mx-auto">
-				<h1 className="text-3xl font-bold mb-6">My Journal</h1>
+				<h1 className="text-3xl font-bold my-6">My Journal</h1>
 
 				{/* new entry section */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-6">
