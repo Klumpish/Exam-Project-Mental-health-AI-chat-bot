@@ -4,25 +4,27 @@
 import Chatbox from '@/components/Chatbox';
 import MessageBubble from '@/components/MessageBubble';
 import Navigation from '@/components/Navigation';
-import { getChatHistory, sendMessageToAI } from '@/services/chatService';
+import {
+	ChatMessage,
+	getChatHistory,
+	sendMessageToAI,
+} from '@/services/chatService';
 import { error, timeStamp } from 'console';
 import { useState, useEffect, useRef } from 'react';
 
+type Message = {
+	text: string;
+	sender: 'user' | 'ai';
+	timestamp: Date;
+};
 export default function ChatPage() {
-	// type for message objects
-	type Message = {
-		text: string;
-		sender: string;
-		timestamp: Date;
-	};
-
 	// state to store all msg in convo
 	const [messages, setMessages] = useState<Message[]>([]);
 
 	// state to track if we are waiting for AI response
 	const [isLoading, setIsLoading] = useState(false);
-
 	const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+	const [historyError, setHistoryError] = useState<string | null>(null);
 
 	// reference to scroll to bottom of chat when new msg arrive
 	const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -37,16 +39,20 @@ export default function ChatPage() {
 		scrollToBottom();
 	}, [messages]);
 
+	useEffect(() => {
+		loadChatHistory();
+	}, []);
+
 	// func to load previous chat history
 	const loadChatHistory = async () => {
 		try {
 			setIsLoadingHistory(true);
+			setHistoryError(null);
 			console.log('Loading chat history...');
-
 			const history = await getChatHistory();
 
 			//backend format to frontend format
-			const formattedMessages: Message[] = history.map((msg: Message) => ({
+			const formattedMessages: Message[] = history.map((msg: ChatMessage) => ({
 				text: msg.text,
 				sender: msg.sender,
 				timestamp: new Date(msg.timestamp),
@@ -56,7 +62,11 @@ export default function ChatPage() {
 			console.log(`loaded ${formattedMessages.length} messages`);
 		} catch (error) {
 			console.error('Error loading chat history: ', error);
-			//dont show error to user, just start with empty chat
+			setHistoryError(
+				'Failed to load chat hisotry. Starting with a fresh chat.'
+			);
+			//start with empty chat
+			setMessages([]);
 		} finally {
 			setIsLoadingHistory(false);
 		}
@@ -65,13 +75,13 @@ export default function ChatPage() {
 	//func that handles user sending msg
 	const handleSendMessage = async (messageText: string) => {
 		// add user msg to chat
-		const userMessage = {
+		const userMessage: Message = {
 			text: messageText,
 			sender: 'user',
 			timestamp: new Date(),
 		};
 
-		setMessages([...messages, userMessage]);
+		setMessages((prev) => [...prev, userMessage]);
 		setIsLoading(true);
 
 		try {
@@ -80,7 +90,7 @@ export default function ChatPage() {
 
 			// add AI's response to chat
 
-			const aiMessage = {
+			const aiMessage: Message = {
 				text: aiResponse.text,
 				sender: 'ai',
 				timestamp: new Date(),
@@ -90,7 +100,7 @@ export default function ChatPage() {
 		} catch (error) {
 			console.error('Error getting AI response:', error);
 			// show error msg to user
-			const errorMessage = {
+			const errorMessage: Message = {
 				text: 'Sorry, I had trouble connecting, Please try again.',
 				sender: 'ai',
 				timestamp: new Date(),
@@ -132,6 +142,12 @@ export default function ChatPage() {
 							services or a crisis hotline.
 						</p>
 					</div>
+					{/* History error warning */}
+					{historyError && (
+						<div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4 rounded">
+							<p className="text-sm text-yellow-800">⚠️ {historyError}</p>
+						</div>
+					)}
 
 					{/* msg container */}
 					<div className="bg-white rounded-lg shadow-lg p-4 h-96 overflow-y-auto mb-4">
@@ -141,6 +157,14 @@ export default function ChatPage() {
 								<div className="text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
 									<p className="text-gray-500">Loading chat history...</p>
+									<button
+										onClick={() => {
+											setIsLoadingHistory(false);
+											setMessages([]);
+										}}
+										className="mt-4 text-sm text-blue-600 hover:text-blue-800 underline">
+										Skip and start fresh
+									</button>
 								</div>
 							</div>
 						) : messages.length === 0 ? (
