@@ -23,15 +23,26 @@ public class MoodController {
     private MoodService moodService;
 
     /**
-     * POST endpoint to log daily mood
-     * URL: /api/mood
-     * Body: {"mood": 1-5, "notes": "optional notes"}
+     * POST: endpoint to log daily mood
+     * URL: {@code /api/mood}
+     * Body: {@code {"mood": 1-5, "notes": "optional notes"}}
      */
     @PostMapping
     public ResponseEntity<?> logMood(@RequestBody Map<String, Object> payload) {
         try {
             //Extract mood rating from request
-            Integer mood = (Integer) payload.get("mood");
+//            Integer mood = (Integer) payload.get("mood");
+            Integer mood = null;
+            Object moodObj = payload.get("mood");
+
+            if(moodObj instanceof Integer){
+                mood = (Integer) moodObj;
+
+            } else if (moodObj instanceof String) {
+                mood = Integer.parseInt((String) moodObj);
+            }
+
+            /*extract optional notes from request*/
             String notes = (String) payload.get("notes");
 
             //validate mood value
@@ -44,14 +55,20 @@ public class MoodController {
             //TODO: get userID from authentication
             Long userId = 1L; //placeholder
 
-            //save mood log
+            //TODO remove in prod
+            //Log the received data
+            System.out.println("Logging mood: "+ mood +", notes: "+ notes);
+
+
+            //save mood log with notes
             MoodLog moodLog = moodService.logMood(mood, userId, notes);
 
             return ResponseEntity.ok(moodLog);
         } catch (Exception e) {
             System.err.println("Error logging mood: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.internalServerError()
-                                 .body(Map.of("error", "Failed to log mood"));
+                                 .body(Map.of("error", "Failed to log mood: "+e.getMessage()));
         }
     }
 
@@ -96,20 +113,16 @@ public class MoodController {
 
     /**
      * GET endpoint to check if user has logged mood today
-     * URL:/api/mood/today
+     * URL: <b>/api/mood/today</b>
      */
     @GetMapping("/today")
     public ResponseEntity<?> getTodaysMood() {
         try {
             long userId = 1L; // TODO: get from authentication
-            Optional<MoodLog> todaysMood = moodService.getTodaysMood(userId);
 
-            if (todaysMood.isPresent()) {
-                return ResponseEntity.ok(todaysMood.get());
-            } else {
-                return ResponseEntity.ok(Map.of("message", "No mood logged today"));
-            }
-
+          return moodService.getTodaysMood(userId)
+                  .map(ResponseEntity::ok)
+                  .orElse(ResponseEntity.ok(Map.of("message","No mood logged today")));
 
         } catch (Exception e) {
             System.err.println("Error fetching today's mood: " + e.getMessage());
@@ -117,23 +130,7 @@ public class MoodController {
                                  .body(
                                    Map.of("error", "Failed to fetch today's mood"));
         }
-//        try {
-//            long userId = 1L; // TODO: get from authentication
-//
-//            return moodService.getTodaysMood(userId)
-//                              .map(ResponseEntity::ok)
-//                              .orElse(ResponseEntity.ok(
-//                                Map.of("message", "No mood logged today")));
-//
-//        } catch (Exception e) {
-//            System.err.println("Error fetching today's mood: " + e.getMessage());
-//            return ResponseEntity.internalServerError()
-//                                 .body(
-//                                   Map.of("error", "Failed to fetch today's
-//                                   mood"));
-//        }
 
     }
-
 
 }
