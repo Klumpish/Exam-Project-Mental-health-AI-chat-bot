@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 // import { useRouter } from 'next/router';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import InfoBox from '@/components/InfoBox';
+import InfoBox from '../components/InfoBox';
+import CrisisBox from '@/components/CrisisBox';
 
 export default function Home() {
 	const router = useRouter();
@@ -63,7 +64,7 @@ export default function Home() {
 
 						{/* Important disclaimer */}
 						<div className="bg-yellow-900/20 border-l-4 border-yellow-500 p-4 mb-8 max-w-2xl mx-auto rounded">
-							<p className="text-sm text-yellow-200">
+							<p className="text-md text-yellow-200">
 								⚠️ <strong>Important:</strong> This is not a replacement for
 								professional mental health care. If you&apos;re in crisis,
 								please contact emergency services or a crisis hotline
@@ -109,56 +110,13 @@ export default function Home() {
 						/>
 					</div>
 					{/* Crisis Resources */}
-					<div className="mt-16 bg-red-50 border border-red-200 rounded-lg p-6 max-w-2xl mx-auto">
-						<h3 className="text-xl font-bold text-red-900 mb-4">
-							⚠️ Need Immediate Help?
-						</h3>
-						<ul className="space-y-2 text-red-800">
-							<li>
-								🇪🇺 Emergency Services (EU & Sweden): <strong>112</strong> — Dial
-								for immediate help
-							</li>
-							<li>
-								🇸🇪 Suicide Zero (Sweden): <strong>90 101 101</strong> or visit{' '}
-								<a
-									href="https://suicidezero.se"
-									className="underline"
-									target="_blank"
-									rel="noopener noreferrer">
-									suicidezero.se
-								</a>
-							</li>
-							<li>
-								🇬🇧 The Samaritans (UK & Ireland): Call <strong>116 123</strong>{' '}
-								or visit{' '}
-								<a
-									href="https://www.samaritans.org"
-									className="underline"
-									target="_blank"
-									rel="noopener noreferrer">
-									samaritans.org
-								</a>
-							</li>
-							<li>
-								🌍 International:{' '}
-								<a
-									href="https://www.iasp.info/resources/Crisis_Centres/"
-									className="underline"
-									target="_blank"
-									rel="noopener noreferrer">
-									Find Your Local Hotline
-								</a>
-							</li>
-						</ul>
-						<p className="mt-4 text-red-900 font-medium">
-							You don’t have to face this alone. Professional help is available
-							24/7.
-						</p>
+					<div className="mt-16 bg-red-900/20 rounded-lg border border-red-800 p-6 max-w-2xl mx-auto">
+						<CrisisBox />
 					</div>
 				</main>
 				{/* Footer */}
-				<footer className="bg-gray-100 mt-16 py-8">
-					<div className="max-w-7xl mx-auto px-4 text-center text-gray-600">
+				<footer className="bg-[var(--surface)] mt-16 py-8 border-t border-[var(--border)]">
+					<div className="max-w-7xl mx-auto px-4 text-center text-[var(--muted)]">
 						<p>
 							&copy; 2025 Mental Health Chatbot. Not a substitute for
 							professional care.

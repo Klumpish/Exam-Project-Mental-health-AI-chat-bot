@@ -15,19 +15,19 @@ export default function Navigation() {
 
 	const isActive = (path: string) => {
 		return pathname === path
-			? 'bg-blue-100 text-blue-700'
-			: 'text-gray-700 hover:bg-gray-100';
+			? 'bg-blue-600 text-white'
+			: 'text-[var(--muted)] hover:bg-[var(--elevated)] hover:text-[var(--text)]';
 	};
 
 	return (
 		<>
 			{/* top navigation bar */}
-			<nav className="bg-pink-200 shadow-md">
+			<nav className="bg-[var(--surface)] border-b border-[var(--border)] shadow-md">
 				<div className="max-w-7xl mx-auto px-4">
 					<div className="flex justify-between items-center h-16">
 						{/* Logo */}
 						<Link href="/">
-							<span className="text-2xl font-bold text-blue-600 cursor-pointer">
+							<span className="text-2xl font-bold text-blue-400 cursor-pointer hover:text-blue-300 transition-colors">
 								🧠 MindCare
 							</span>
 						</Link>
