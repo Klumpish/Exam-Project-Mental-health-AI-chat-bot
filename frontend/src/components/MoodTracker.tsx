@@ -4,20 +4,26 @@
 import { saveMoodLog } from '@/services/moodService';
 import { useState } from 'react';
 
-type MoodTrackerProps = {
-	onMoodLogged: () => void;
-};
+interface MoodTrackerProps {
+	onMoodLogged?: () => void;
+}
+
+interface moodOptiton {
+	value: number;
+	emoji: string;
+	label: string;
+}
 
 export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 	// state for selecting mood (1-5)
 	const [selectedMood, setSelectedMood] = useState<number | null>(null);
-	const [notes, setNotes] = useState('');
-	const [successMessage, setSuccessMessage] = useState('');
+	const [notes, setNotes] = useState<string>('');
+	const [successMessage, setSuccessMessage] = useState<string>('');
 	// state for saving status
-	const [isSaving, setIsSaving] = useState(false);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	// mood options with emojis
-	const moodOptitons = [
+	const moodOptitons: moodOptiton[] = [
 		{ value: 1, emoji: '😢', label: 'Very Bad' },
 		{ value: 2, emoji: '😕', label: 'Bad' },
 		{ value: 3, emoji: '😐', label: 'Okey' },
@@ -35,8 +41,8 @@ export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 		try {
 			setIsSaving(true);
 
-			// save mood to backend
-			await saveMoodLog(selectedMood);
+			// save mood with notes (even if empty)
+			await saveMoodLog(selectedMood, notes.trim() || undefined);
 
 			setSuccessMessage('Mood Logged successfully');
 
@@ -74,7 +80,11 @@ export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 					<button
 						key={mood.value}
 						onClick={() => setSelectedMood(mood.value)}
-						className={`flex flex-col items-center p-4 rounded-lg transition-all ${selectedMood === mood.value ? 'bg-blue-500 text-white scale-110' : 'bg-gray-100 hover:bg-gray-200'}`}>
+						className={`flex flex-col items-center p-4 rounded-lg transition-all ${
+							selectedMood === mood.value
+								? 'bg-blue-500 text-white scale-110'
+								: 'bg-gray-100 hover:bg-gray-200'
+						}`}>
 						<span className="text-4xl mb-2">{mood.emoji}</span>
 						<span className="text-sm">{mood.label}</span>
 					</button>
@@ -93,7 +103,11 @@ export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 						placeholder="What's contributing to your mood today?"
 						className="w-full px-4 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
 						rows={3}
+						maxLength={500}
 					/>
+					<p className="text-xs text-gray-500 mt-1">
+						{notes.length}/500 characters
+					</p>
 				</div>
 			)}
 

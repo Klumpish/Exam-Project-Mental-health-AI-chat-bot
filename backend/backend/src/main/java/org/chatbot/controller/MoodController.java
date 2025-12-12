@@ -120,9 +120,11 @@ public class MoodController {
         try {
             long userId = 1L; // TODO: get from authentication
 
-          return moodService.getTodaysMood(userId)
-                  .map(ResponseEntity::ok)
-                  .orElse(ResponseEntity.ok(Map.of("message","No mood logged today")));
+            return moodService.getTodaysMood(userId)
+                    .<ResponseEntity<Object>>map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.ok(
+                            Map.of("message", "No mood logged today")
+                    ));
 
         } catch (Exception e) {
             System.err.println("Error fetching today's mood: " + e.getMessage());
