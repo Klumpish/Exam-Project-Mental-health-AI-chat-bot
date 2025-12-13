@@ -55,7 +55,7 @@ export default function Navigation() {
 							<button
 								onClick={handleLogout}
 								className="px-0 py-0 rounded-lg">
-								<span className="px-4 py-2 rounded-lg cursor-pointer transition-colors hover:bg-gray-100">
+								<span className="px-4 py-2 rounded-lg cursor-pointer transition-colors text-red-400 hover:bg-red-900/20">
 									🛑 Logout
 								</span>
 							</button>
@@ -64,7 +64,7 @@ export default function Navigation() {
 						{/* Mobile Burger Button */}
 						<button
 							onClick={() => setIsOpen(!isOpen)}
-							className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+							className="md:hidden p-2 rounded-lg hover:bg-[var(--elevated)] transition-colors text-[var(--text)]">
 							{isOpen ? (
 								// X icon when menu is open
 								<svg
@@ -100,7 +100,7 @@ export default function Navigation() {
 
 				{/* Mobile Menu */}
 				{isOpen && (
-					<div className="md:hidden bg-white border-t">
+					<div className="md:hidden bg-[var(--surface)] border-t border-[var(--border)]">
 						<div className="px-4 py-2 space-y-2">
 							<Link href="/chat">
 								<div
@@ -128,7 +128,7 @@ export default function Navigation() {
 									handleLogout();
 									setIsOpen(false);
 								}}
-								className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+								className="w-full text-left px-4 py-3 text-red-400 hover:bg-red-900/20 rounded-lg">
 								Logout
 							</button>
 						</div>

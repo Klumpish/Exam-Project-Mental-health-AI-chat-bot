@@ -44,19 +44,22 @@ export default function RegisterPage() {
 	};
 
 	return (
-		<div
-			className="min-h-screen bg-gradient-to-b from-blue-600 to-white
-        flex items-center justify-center px-4">
+		<div className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4">
 			<div className="max-w-md w-full">
 				{/* Header */}
-				<div className="text-center mb-8">
+				<div className="text-center mb-8 animate-fadeIn">
 					{/* TODO: keep the icon or not?, i like it */}
-					<h1 className="text-4xl font-bold text-gray-900 mb-2"> 🧠 Join Us</h1>
-					<p className="text-gray-600">Create your account to get started</p>
+					<h1 className="text-4xl font-bold text-[var(--text)] mb-2">
+						{' '}
+						🧠 Join Us
+					</h1>
+					<p className="text-[var(--muted)]">
+						Create your account to get started
+					</p>
 				</div>
 
 				{/* Registration Form */}
-				<div className="bg-white rounded-lg shadow-lg p-8">
+				<div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] shadow-lg p-8">
 					<form
 						onSubmit={handleRegister}
 						className="space-y-6">
@@ -64,7 +67,7 @@ export default function RegisterPage() {
 						<div>
 							<label
 								htmlFor="name"
-								className="block text-sm font-medium text-gray-700 mb-2">
+								className="block text-sm font-medium text-[var(--text)] mb-2">
 								Full Name
 							</label>
 							<input
@@ -73,7 +76,8 @@ export default function RegisterPage() {
 								value={name}
 								onChange={(e) => setName(e.target.value)}
 								required
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
+								placeholder-[var(--muted)]"
 								placeholder="Jenny Doe"
 							/>
 						</div>
@@ -82,7 +86,7 @@ export default function RegisterPage() {
 						<div>
 							<label
 								htmlFor="email"
-								className="block text-sm font-medium text-gray-700 mb-2">
+								className="block text-sm font-medium text-[var(--text)] mb-2">
 								Email
 							</label>
 							<input
@@ -91,7 +95,8 @@ export default function RegisterPage() {
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								required
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
+								placeholder-[var(--muted)]"
 								placeholder="you@example.com"
 							/>
 						</div>
@@ -100,7 +105,7 @@ export default function RegisterPage() {
 						<div>
 							<label
 								htmlFor="password"
-								className="block text-sm font-medium text-gray-700 mb-2">
+								className="block text-sm font-medium text-[var(--text)] mb-2">
 								Password
 							</label>
 							<input
@@ -109,7 +114,8 @@ export default function RegisterPage() {
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								required
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
+								placeholder-[var(--muted)]"
 								placeholder="••••••••"
 							/>
 						</div>
@@ -117,7 +123,7 @@ export default function RegisterPage() {
 						<div>
 							<label
 								htmlFor="confirmPassword"
-								className="block text-sm font-medium text-gray-700 mb-2">
+								className="block text-sm font-medium text-[var(--text)] mb-2">
 								Confirm Password
 							</label>
 							<input
@@ -126,19 +132,20 @@ export default function RegisterPage() {
 								value={confirmPassword}
 								onChange={(e) => setConfirmPassword(e.target.value)}
 								required
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
+								placeholder-[var(--muted)]"
 								placeholder="••••••••"
 							/>
 						</div>
 						{/* Error Message */}
 						{error && (
-							<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+							<div className="bg-red-900/20 border border-red-800 text-red-300 px-4 py-3 rounded-lg">
 								{error}
 							</div>
 						)}
 
 						{/* Temporary Notice */}
-						<div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm">
+						<div className="bg-yellow-900/20 border border-yellow-800 text-yellow-200 px-4 py-3 rounded-lg text-md">
 							ℹ️ <strong>Development Mode:</strong> Registration is simplified
 							for testing
 						</div>
@@ -147,16 +154,17 @@ export default function RegisterPage() {
 						<button
 							type="submit"
 							disabled={isLoading}
-							className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
+							className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-[var(--elevated)]
+							disabled:text-[var(--muted)] disabled:cursor-not-allowed transition-colors">
 							{isLoading ? 'Creating account...' : 'Create Account'}
 						</button>
 					</form>
 					{/* Login Link */}
 					<div className="mt-6 text-center">
-						<p className="text-gray-600">
+						<p className="text-[var(--muted)]">
 							Already have an account?{' '}
 							<Link href="/login">
-								<span className="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer">
+								<span className="text-blue-400 hover:text-blue-300 font-semibold cursor-pointer transition-colors">
 									Sign in
 								</span>
 							</Link>
@@ -166,7 +174,7 @@ export default function RegisterPage() {
 				{/* Back to Home */}
 				<div className="text-center mt-6">
 					<Link href="/">
-						<span className="text-gray-600 hover:text-gray-800 cursor-pointer">
+						<span className="text-[var(--muted)] hover:text-[var(--text)] cursor-pointer transition-colors">
 							← Back to home
 						</span>
 					</Link>

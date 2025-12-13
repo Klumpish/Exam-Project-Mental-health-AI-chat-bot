@@ -46,14 +46,15 @@ export default function Chatbox({ onSendMessage, disabled }: Chatboxprops) {
 				onKeyDown={handleKeyDown}
 				placeholder="Type your message here..."
 				disabled={disabled}
-				className="flex-1 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+				className="flex-1 p-3 bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[var(--muted)]
+				disabled:opacity-50"
 				rows={3}
 			/>
 
 			<button
 				type="submit"
 				disabled={disabled || inputText.trim() === ''}
-				className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed">
+				className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-[var(--elevated)] disabled:cursor-not-allowed transition-colors">
 				Send
 			</button>
 		</form>

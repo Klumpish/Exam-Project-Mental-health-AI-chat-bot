@@ -114,11 +114,13 @@ export default function ChatPage() {
 
 	return (
 		<>
-			<div className="min-h-screen bg-gray-50  p-4">
+			<div className="min-h-screen bg-[var(--bg)]  p-4">
 				<Navigation />
 				<div className="max-w-4xl mx-auto">
 					<div className="flex justify-between items-center mb-4">
-						<h1 className="text-3xl font-bold md-4">Chat with AI Support</h1>
+						<h1 className="text-3xl font-bold md-4 text-[var(--text)]">
+							Chat with AI Support
+						</h1>
 						{/* Clear History Button */}
 						{messages.length > 0 && (
 							<button
@@ -127,7 +129,7 @@ export default function ChatPage() {
 										setMessages([]);
 									}
 								}}
-								className="text-sm text-red-600 hover:text-red-800">
+								className="text-sm text-red-400 hover:text-red-300 transition-colors">
 								Clear Chat
 							</button>
 						)}
@@ -135,8 +137,8 @@ export default function ChatPage() {
 
 					{/* Disclaimer msg important! */}
 					{/* #TODO check the ' in "if you're" */}
-					<div className="bg-blue-100 border-l-4 border-blue-500 p-4 mb-4">
-						<p className="text-sm">
+					<div className="bg-blue-900/20 border-l-4 border-blue-500 p-4 mb-4 rounded">
+						<p className="text-md text-blue-200">
 							This Chatbot is not a replacement for professional mental health
 							support. If you&apos;re in crisis, please contact emergency
 							services or a crisis hotline.
@@ -144,25 +146,25 @@ export default function ChatPage() {
 					</div>
 					{/* History error warning */}
 					{historyError && (
-						<div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4 rounded">
-							<p className="text-sm text-yellow-800">⚠️ {historyError}</p>
+						<div className="bg-yellow-900/20 border-l-4 border-yellow-500 p-4 mb-4 rounded">
+							<p className="text-sm text-yellow-200">⚠️ {historyError}</p>
 						</div>
 					)}
 
 					{/* msg container */}
-					<div className="bg-white rounded-lg shadow-lg p-4 h-96 overflow-y-auto mb-4">
+					<div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 h-96 overflow-y-auto mb-4">
 						{isLoadingHistory ? (
 							// Loading state
 							<div className="flex items-center justify-center h-full">
 								<div className="text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-									<p className="text-gray-500">Loading chat history...</p>
+									<p className="text-[var(--muted)]">Loading chat history...</p>
 									<button
 										onClick={() => {
 											setIsLoadingHistory(false);
 											setMessages([]);
 										}}
-										className="mt-4 text-sm text-blue-600 hover:text-blue-800 underline">
+										className="mt-4 text-sm text-blue-400 hover:text-blue-300 underline">
 										Skip and start fresh
 									</button>
 								</div>
@@ -170,7 +172,7 @@ export default function ChatPage() {
 						) : messages.length === 0 ? (
 							// Empty state
 							<div className="flex items-center justify-center h-full">
-								<div className="text-center text-gray-500">
+								<div className="text-center text-[var(--muted)]">
 									<p className="text-lg mb-2">👋 Welcome!</p>
 									<p>Start a conversation by typing a message below.</p>
 								</div>
@@ -190,14 +192,14 @@ export default function ChatPage() {
 								{/* Loading indicator while AI is thinking */}
 								{isLoading && (
 									<div className="flex mb-4">
-										<div className="bg-gray-200 rounded-lg px-4 py-3">
+										<div className="bg-[var(--elevated)] rounded-lg px-4 py-3">
 											<div className="flex space-x-2">
-												<div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+												<div className="w-2 h-2 bg-[var(--muted)] rounded-full animate-bounce"></div>
 												<div
-													className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+													className="w-2 h-2 bg-[var(--muted)] rounded-full animate-bounce"
 													style={{ animationDelay: '0.1s' }}></div>
 												<div
-													className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+													className="w-2 h-2 bg-[var(--muted)] rounded-full animate-bounce"
 													style={{ animationDelay: '0.2s' }}></div>
 											</div>
 										</div>
