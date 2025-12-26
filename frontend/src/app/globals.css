@@ -1,4 +1,63 @@
 @import 'tailwindcss';
+:root {
+	--bg: #ffffff;
+	--surface: #f8fafc;
+	--elevated: #e2e8f0;
+	--border: #cbd5e1;
+	--text: #0f172a;
+	--muted: #475569;
+}
+.dark {
+	--bg: #0f172a; /*  Main background */
+	--surface: #1e293b; /*  Cards, panels */
+	--elevated: #334155; /*  Elevated elements */
+	--border: #475569; /*  Borders */
+	--text: #f1f5f9; /*  Main text */
+	--muted: #94a3b8; /*  Secondary text */
+}
+
+/* Scrollbar styling for dark mode
+::-webkit-scrollbar {
+	width: 12px;
+}
+
+::-webkit-scrollbar-track {
+	@apply bg-dark-bg;
+}
+
+::-webkit-scrollbar-thumb {
+	@apply bg-dark-elevated rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	@apply bg-dark-border;
+}
+
+ Selection color 
+::selection {
+	@apply bg-blue-600 text-white;
+} 
+*/
+
+/* Custom animations */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fadeIn {
+	animation: fadeIn 0.3s ease-out;
+}
+
+/* body {
+	@apply --bg-dark --text-dark;
+} */
 
 /* Define your custom theme in CSS */
 @theme {

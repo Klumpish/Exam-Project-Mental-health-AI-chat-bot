@@ -108,24 +108,28 @@ export default function JournalPage() {
 				<Navigation />
 
 				<div className="max-w-4xl mx-auto">
-					<h1 className="text-3xl font-bold my-6">My Journal</h1>
+					<h1 className="text-3xl font-bold my-6 text-[var(--text)]">
+						My Journal
+					</h1>
 					{/* Success Message */}
 					{successMessage && (
-						<div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">
+						<div className="bg-green-900/20 border-l-4 border-green-500 text-green-300 p-4 mb-4 rounded">
 							{successMessage}
 						</div>
 					)}
 					{/* Error message */}
 					{error && (
-						<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+						<div className="bg-red-900/20 border-l-4 border-red-500 text-red-300 p-4 mb-4 rounded">
 							{error}
 						</div>
 					)}
 
 					{/* new entry section */}
-					<div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-						<h2 className="text-xl font-semibold mb-4">Write New Entry</h2>
-						<p className="text-sm text-gray-600 mb-4">
+					<div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] shadow-lg p-6 mb-6">
+						<h2 className="text-xl font-semibold text-[var(--text)] mb-4">
+							Write New Entry
+						</h2>
+						<p className="text-sm text-[var(--muted)] mb-4">
 							{new Date().toLocaleDateString('en-US', {
 								weekday: 'long',
 								year: 'numeric',
@@ -140,17 +144,17 @@ export default function JournalPage() {
 								setError(''); // clear error when user types
 							}}
 							placeholder="How are you feeling today? What's on your mind?"
-							className="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+							className="w-full h-48 p-4 border border-[var(--border)] text-[var(--text)] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[var(--muted)]"
 						/>
 
 						<div className="flex justify-between items-center mt-4">
-							<p className="text-sm text-gray-500">
+							<p className="text-sm text-[var(--muted)]">
 								{entryText.length} characters
 							</p>
 							<button
 								onClick={handleSaveEntry}
 								disabled={isSaving || entryText.trim() === ''}
-								className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300">
+								className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-[var(--elevated)] disabled:text-[var(--muted)] disabled:cursor-not-allowed transition-colors flex items-center gap-2">
 								{isSaving ? (
 									<>
 										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -165,18 +169,20 @@ export default function JournalPage() {
 
 					{/* previous entries section */}
 					<div>
-						<h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
+						<h2 className="text-xl font-semibold text-[var(--text)] mb-4">
+							Previous Entries
+						</h2>
 						{isLoading ? (
 							//loading state
 							<div className="flex items-center justify-center py-12">
 								<div className="text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-									<p className="text-gray-500">Loading entries...</p>
+									<p className="text-[var(--muted)]">Loading entries...</p>
 								</div>
 							</div>
 						) : entries.length === 0 ? (
 							//Empty state
-							<div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+							<div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] shadow p-8 text-center text-[var(--muted)]">
 								<p className="text-lg mb-2">No journal entries yet</p>
 								<p>Start writing above to create your first entry!</p>
 							</div>
@@ -186,9 +192,9 @@ export default function JournalPage() {
 								{entries.map((entry) => (
 									<div
 										key={entry.id}
-										className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow">
+										className="bg-[var(--surface)] rounded-lg border border-[var(--border)] shadow p-6 hover:border-blue-500 transition-all">
 										<div className="flex justify-between items-start mb-3">
-											<p className="text-sm text-gray-500 mb-2">
+											<p className="text-sm text-[var(--muted)] font-medium">
 												{new Date(entry.date).toLocaleDateString('en-US', {
 													weekday: 'long',
 													year: 'numeric',
@@ -198,12 +204,12 @@ export default function JournalPage() {
 											</p>
 											<button
 												onClick={() => handleDeleteEntry(entry.id)}
-												className="text-red-500 hover:text-red-700 text-sm">
+												className="text-red-400 hover:text-red-300 text-sm transition-colors">
 												{' '}
 												🗑️ Delete
 											</button>
 										</div>
-										<p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+										<p className="text-[var(--text)] whitespace-pre-wrap leading-relaxed">
 											{entry.text}
 										</p>
 									</div>
