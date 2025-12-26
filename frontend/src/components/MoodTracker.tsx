@@ -8,7 +8,7 @@ interface MoodTrackerProps {
 	onMoodLogged?: () => void;
 }
 
-interface moodOptiton {
+interface MoodOptiton {
 	value: number;
 	emoji: string;
 	label: string;
@@ -23,7 +23,7 @@ export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	// mood options with emojis
-	const moodOptitons: moodOptiton[] = [
+	const moodOptitons: MoodOptiton[] = [
 		{ value: 1, emoji: '😢', label: 'Very Bad' },
 		{ value: 2, emoji: '😕', label: 'Bad' },
 		{ value: 3, emoji: '😐', label: 'Okey' },
@@ -66,11 +66,13 @@ export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 	};
 
 	return (
-		<div className="bg-white rounded-lg shadow-lg p-6">
-			<h2 className="text-2xl font-bold mb-4">How are you feeling today?</h2>
+		<div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] shadow-lg p-6">
+			<h2 className="text-2xl font-bold text-[var(--text)] mb-4">
+				How are you feeling today?
+			</h2>
 
 			{successMessage && (
-				<div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">
+				<div className="bg-green-900/20 border-l-4 border-green-500 text-green-300 p-4 mb-4 rounded">
 					{successMessage}
 				</div>
 			)}
@@ -82,11 +84,11 @@ export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 						onClick={() => setSelectedMood(mood.value)}
 						className={`flex flex-col items-center p-4 rounded-lg transition-all ${
 							selectedMood === mood.value
-								? 'bg-blue-500 text-white scale-110'
-								: 'bg-gray-100 hover:bg-gray-200'
+								? 'bg-blue-600 text-white scale-110 shadow-lg'
+								: 'bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] hover:bg-[var(--elevated)]'
 						}`}>
 						<span className="text-4xl mb-2">{mood.emoji}</span>
-						<span className="text-sm">{mood.label}</span>
+						<span className="text-sm font-medium">{mood.label}</span>
 					</button>
 				))}
 			</div>
@@ -94,18 +96,18 @@ export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 			{/* Optional notes */}
 			{selectedMood && (
 				<div className="mb-4">
-					<label className="block text-sm font-medium text-gray-700 mb-2">
+					<label className="block text-sm font-medium text-[var(--text)] mb-2">
 						Add a note (optional)
 					</label>
 					<textarea
 						value={notes}
 						onChange={(e) => setNotes(e.target.value)}
 						placeholder="What's contributing to your mood today?"
-						className="w-full px-4 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="w-full px-4 py-2 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[var(--muted)]"
 						rows={3}
 						maxLength={500}
 					/>
-					<p className="text-xs text-gray-500 mt-1">
+					<p className="text-sm text-[var(--muted)] mt-1">
 						{notes.length}/500 characters
 					</p>
 				</div>
@@ -115,7 +117,7 @@ export default function MoodTracker({ onMoodLogged }: MoodTrackerProps) {
 			<button
 				onClick={handleSaveMood}
 				disabled={!selectedMood || isSaving}
-				className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed">
+				className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-[var(--elevated)] disabled:text-[var(--muted)] disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2">
 				{isSaving ? (
 					<>
 						<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

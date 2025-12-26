@@ -6,7 +6,7 @@ export interface MoodLog {
 	mood: number;
 	date: string;
 	createdAt: string;
-	notes?: string;
+	note?: string;
 	userId: number;
 }
 
