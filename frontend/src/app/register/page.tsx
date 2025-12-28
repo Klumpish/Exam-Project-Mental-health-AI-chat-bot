@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { register } from '@/services/authService';
 
 export default function RegisterPage() {
 	const [name, setName] = useState('');
@@ -30,14 +31,17 @@ export default function RegisterPage() {
 		setIsLoading(true);
 
 		try {
-			//TODO: in dev skip real registration for now
-			const dummyToken = 'temp-token-' + Date.now();
-			localStorage.setItem('authToken', dummyToken);
+			// Call register API
 
-			//Redirect to chat
-			router.push('/chat');
-		} catch (err) {
-			setError('Registration failed. Please try again.');
+			await register({ name, email, password });
+
+			console.log(' Registration successful, redirecting to home');
+
+			//Redirect to home
+			router.push('/');
+		} catch (err: any) {
+			console.error(' Registration failed:', err);
+			setError(err.message || 'Registration failed. Please try again.');
 		} finally {
 			setIsLoading(false);
 		}
@@ -48,7 +52,6 @@ export default function RegisterPage() {
 			<div className="max-w-md w-full">
 				{/* Header */}
 				<div className="text-center mb-8 animate-fadeIn">
-					{/* TODO: keep the icon or not?, i like it */}
 					<h1 className="text-4xl font-bold text-[var(--text)] mb-2">
 						{' '}
 						🧠 Join Us
@@ -79,6 +82,7 @@ export default function RegisterPage() {
 								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
 								placeholder-[var(--muted)]"
 								placeholder="Jenny Doe"
+								disabled={isLoading}
 							/>
 						</div>
 
@@ -98,6 +102,7 @@ export default function RegisterPage() {
 								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
 								placeholder-[var(--muted)]"
 								placeholder="you@example.com"
+								disabled={isLoading}
 							/>
 						</div>
 
@@ -117,6 +122,7 @@ export default function RegisterPage() {
 								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
 								placeholder-[var(--muted)]"
 								placeholder="••••••••"
+								disabled={isLoading}
 							/>
 						</div>
 						{/* Confirm Password Field */}
@@ -135,6 +141,7 @@ export default function RegisterPage() {
 								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
 								placeholder-[var(--muted)]"
 								placeholder="••••••••"
+								disabled={isLoading}
 							/>
 						</div>
 						{/* Error Message */}
@@ -144,21 +151,24 @@ export default function RegisterPage() {
 							</div>
 						)}
 
-						{/* Temporary Notice */}
-						<div className="bg-yellow-900/20 border border-yellow-800 text-yellow-200 px-4 py-3 rounded-lg text-md">
-							ℹ️ <strong>Development Mode:</strong> Registration is simplified
-							for testing
-						</div>
-
 						{/* Submit Button */}
 						<button
 							type="submit"
 							disabled={isLoading}
 							className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-[var(--elevated)]
-							disabled:text-[var(--muted)] disabled:cursor-not-allowed transition-colors">
-							{isLoading ? 'Creating account...' : 'Create Account'}
+							disabled:text-[var(--muted)] disabled:cursor-not-allowed transition-colors
+							flex items-center justify-center gap-2">
+							{isLoading ? (
+								<>
+									<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+									Creating account...
+								</>
+							) : (
+								'Create Account'
+							)}
 						</button>
 					</form>
+
 					{/* Login Link */}
 					<div className="mt-6 text-center">
 						<p className="text-[var(--muted)]">

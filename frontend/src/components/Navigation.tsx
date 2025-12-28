@@ -1,15 +1,23 @@
 // Burger menu navigation component
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
+import { logout, getCurrentUser, User } from '../services/authService';
 
 export default function Navigation() {
 	const [isOpen, setIsOpen] = useState(false);
+	const [user, setUser] = useState<User | null>(null);
 	const router = useRouter();
 	const pathname = usePathname();
 
+	useEffect(() => {
+		//Load current user on mount
+		const currentUser = getCurrentUser();
+		setUser(currentUser);
+	}, []);
+
 	const handleLogout = () => {
-		localStorage.removeItem('authToken');
+		logout();
 		router.push('/login');
 	};
 
@@ -22,7 +30,7 @@ export default function Navigation() {
 	return (
 		<>
 			{/* top navigation bar */}
-			<nav className="bg-[var(--surface)] border-b border-[var(--border)] shadow-md">
+			<nav className="bg-[var(--surface)] border-b border-[var(--border)]">
 				<div className="max-w-7xl mx-auto px-4">
 					<div className="flex justify-between items-center h-16">
 						{/* Logo */}
@@ -33,7 +41,16 @@ export default function Navigation() {
 						</Link>
 
 						{/* Desktop Navigation */}
-						<div className="hidden md:flex space-x-4">
+						<div className="hidden md:flex items-center space-x-4">
+							{/* User greeting */}
+							{user && (
+								<span className="text-[var(--muted)] text-lg">
+									Hello,{' '}
+									<span className="text-[var(--text)] font-medium">
+										{user.name}
+									</span>
+								</span>
+							)}
 							<Link href="/chat">
 								<span
 									className={`px-4 py-2 rounded-lg cursor-pointer transition-colors ${isActive('/chat')}`}>
@@ -102,6 +119,16 @@ export default function Navigation() {
 				{isOpen && (
 					<div className="md:hidden bg-[var(--surface)] border-t border-[var(--border)]">
 						<div className="px-4 py-2 space-y-2">
+							{/* user greeting mobile */}
+							{user && (
+								<div className="px-4 py-2 text-[var(--muted)] text-m border-b border-[var(--border)] mb-2 ">
+									Hello,{' '}
+									<span className="text-[var(--text)] font-medium">
+										{user.name}
+									</span>
+								</div>
+							)}
+
 							<Link href="/chat">
 								<div
 									className={`block px-4 py-3 rounded-lg cursor-pointer ${isActive('/chat')}`}

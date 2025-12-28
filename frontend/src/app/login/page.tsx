@@ -1,8 +1,9 @@
-// Simple login page (we'll add real authentication later)
+// Simple login page
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { login } from '@/services/authService';
 
 export default function LoginPage() {
 	const [email, setEmail] = useState('');
@@ -16,19 +17,16 @@ export default function LoginPage() {
 		setError('');
 		setIsLoading(true);
 
-		/*TODO
-		TEMPORARY: Skip authentication for now
-        add real authentication later
-		*/
 		try {
-			// For now, accept any login and create a dummy token
-			const dummyToken = 'temp-token-' + Date.now();
-			localStorage.setItem('authToken', dummyToken);
+			// Call login API
+			await login({ email, password });
 
-			// Redirect to chat
-			router.push('/chat');
-		} catch (err) {
-			setError('Login failed. Please try again.');
+			console.log('Login successful');
+			// Redirect to home
+			router.push('/');
+		} catch (err: any) {
+			console.error(' Login failed:', err);
+			setError(err.message || 'Login failed. Please check your credentials.');
 		} finally {
 			setIsLoading(false);
 		}
@@ -67,6 +65,7 @@ export default function LoginPage() {
 								required
 								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[var(--muted)]"
 								placeholder="you@example.com"
+								disabled={isLoading}
 							/>
 						</div>
 
@@ -85,6 +84,7 @@ export default function LoginPage() {
 								required
 								className="w-full px-4 py-3 bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[var(--muted)]"
 								placeholder="••••••••"
+								disabled={isLoading}
 							/>
 						</div>
 
@@ -95,20 +95,22 @@ export default function LoginPage() {
 							</div>
 						)}
 
-						{/* Temporary Notice */}
-						<div className="bg-yellow-900/20 border border-yellow-800 text-yellow-200 px-4 py-3 rounded-lg text-md">
-							ℹ️ <strong>Development Mode:</strong> Enter any email/password to
-							login
-						</div>
-
 						{/* Submit Button */}
 						<button
 							type="submit"
 							disabled={isLoading}
-							className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-[var(--elevated)] 
+							className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-[var(--elevated)]
 							disabled:text-[var(--muted)]
-							disabled:cursor-not-allowed transition-colors">
-							{isLoading ? 'Signing in...' : 'Sign In'}
+							disabled:cursor-not-allowed transition-colors
+							flex items-center justify-center gap-2">
+							{isLoading ? (
+								<>
+									<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+									Signing in...
+								</>
+							) : (
+								'Sign In'
+							)}
 						</button>
 					</form>
 
