@@ -20,9 +20,59 @@ services:
         volumes:
             # Persist database data
             - postgres_data:/var/lib/postgresql/data
+            - ./backend/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql
         networks:
             - chatbot_network
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U $POSTGRES_USER" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
+    #Backend (spring boot)
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        container_name: mental_health_backend
+        environment:
+            DB_URL: jdbc:postgresql://postgres:5432/mental_health_db
+            DB_USERNAME: chatbot_user
+            DB_PASSWORD: chatbot_password
+            GPT4ALL_API_URL: http://host.docker.internal:4891/v1
+            GPT4ALL_MODEL_NAME: Mistral Instruct
+            AI_MAX_TOKENS: 150
+            AI_TEMPERATURE: 0.7
+            JWT_SECRET: ${JWT_SECRET}
+            JWT_EXPIRATION: 86400000
+            SERVER_PORT: 8080
+            CORS_ALLOWED_ORIGINS: http://localhost:3000
+        ports:
+            - "8080:8080"
+        depends_on:
+            postgres:
+                condition: service_healthy
+        networks:
+            - chatbot_network
+        restart: unless-stopped
+
+    #Frontend (next.js)
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        container_name: mental_health_frontend
+        environment:
+            NEXT_PUBLIC_API_URL: http://localhost:8080
+        ports:
+            - "3000:3000"
+        depends_on:
+            - backend
+        networks:
+            - chatbot_network
+        restart: unless-stopped
+
+    
     # (Optional) pgAdmin for database management UI
     pgAdmin:
         image: dpage/pgadmin4:latest

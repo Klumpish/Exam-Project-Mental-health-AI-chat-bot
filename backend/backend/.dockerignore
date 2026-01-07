@@ -1,0 +1,14 @@
+target/
+.mvn/wrapper/maven-wrapper.jar
+.env
+*.log
+.DS_Store
+File Location: frontend/.dockerignore
+
+node_modules/
+.next/
+out/
+.env
+.env.local
+*.log
+.DS_Store
