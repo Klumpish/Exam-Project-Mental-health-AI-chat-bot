@@ -2,7 +2,6 @@
 # For an easy start database for development
 # Run with: docker-compose up -d
 
-version: "3.8"
 
 services:
     # PostgreSQL database
@@ -12,7 +11,7 @@ services:
         environment:
             # Database credentials
             #These have to be the same in both, application.properties in /backend
-            POSTGRES_DB: mental_health_db
+            POSTGRES_DB: ${DB_NAME:-mental_health_dev_db}
             POSTGRES_USER: ${DB_USERNAME:-dev_user}
             POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
         ports:
