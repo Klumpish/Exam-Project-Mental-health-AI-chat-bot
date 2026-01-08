@@ -1,5 +1,5 @@
 #the image we are using
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:21-jdk-jammy
 
 #Set working directory
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY .mvn/ .mvn/
 COPY mvnw pom.xml ./
 
 # Download dependencies
-RUN ./mvnw dependency:go-offline
+RUN  chmod +x mvnw && ./mvnw dependency:go-offline
 
 #Copy source code
 COPY src ./src
@@ -18,7 +18,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Expose port 8080
-Expose 8080
+EXPOSE 8080
 
 # Run the app
-CMD ["java","-jar","target/mental-health-chatbot-1.0.0.jar"]
+CMD ["java","-jar","target/mental-health-chatbot-0.0.1-SNAPSHOT.jar"]

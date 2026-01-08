@@ -20,11 +20,10 @@ services:
         volumes:
             # Persist database data
             - postgres_data:/var/lib/postgresql/data
-            - ./backend/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql
         networks:
             - chatbot_network
         healthcheck:
-            test: [ "CMD-SHELL", "pg_isready -U $POSTGRES_USER" ]
+            test: [ "CMD-SHELL", "pg_isready -U dev_user -d mental_health_dev_db" ]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -32,13 +31,13 @@ services:
     #Backend (spring boot)
     backend:
         build:
-            context: ./backend
+            context: ./backend/backend
             dockerfile: Dockerfile
         container_name: mental_health_backend
         environment:
-            DB_URL: jdbc:postgresql://postgres:5432/mental_health_db
-            DB_USERNAME: chatbot_user
-            DB_PASSWORD: chatbot_password
+            DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-mental_health_dev_db}
+            DB_USERNAME: ${DB_USERNAME:-dev_user}
+            DB_PASSWORD: ${DB_PASSWORD:-dev_password}
             GPT4ALL_API_URL: http://host.docker.internal:4891/v1
             GPT4ALL_MODEL_NAME: Mistral Instruct
             AI_MAX_TOKENS: 150

@@ -1,6 +1,6 @@
 // Authnetication service for handling login, register, and token management
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8008';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 //interfaces for auth data
 export interface User {

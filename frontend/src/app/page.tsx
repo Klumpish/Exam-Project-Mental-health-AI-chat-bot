@@ -15,6 +15,7 @@ export default function Home() {
     if (isAuthenticated()) {
       const currentUser = getCurrentUser();
       setUser(currentUser);
+      setIsLoggedIn(true);
     }
     // const token = localStorage.getItem('authToken');
     // setIsLoggedIn(!!token); //converts to true/false
@@ -100,23 +101,27 @@ export default function Home() {
 
           {/* Features grid */}
           <div className="grid md:grid-cols-3 gap-8 mt-16">
-            <InfoBox
-              icon="💬"
-              title="AI Chat Support"
-              text="Talk to our empathetic AI assistant anytime you need support"
-            />
-            <InfoBox
-              icon="📓"
-              title="Daily Journaling"
-              text="Reflect on your thoughts and feelings with private journal
+              <Link href="/chat">
+                  <InfoBox
+                      icon="💬"
+                      title="AI Chat Support"
+                      text="Talk to our empathetic AI assistant anytime you need support"
+                  />
+              </Link>
+              <Link href={"/journal"}>
+                  <InfoBox
+                      icon="📓"
+                      title="Daily Journaling"
+                      text="Reflect on your thoughts and feelings with private journal
 								entries"
-            />
-            <InfoBox
-              icon="📊"
-              title="Mood Tracking"
-              text="Track your mood over time and identify patterns in your
+                  /></Link>
+              <Link href={"/mood"}>
+                  <InfoBox
+                      icon="📊"
+                      title="Mood Tracking"
+                      text="Track your mood over time and identify patterns in your
 								wellbeing"
-            />
+                  /></Link>
           </div>
           {/* Crisis Resources */}
           <div className="mt-16 bg-red-900/20 rounded-lg border border-red-800 p-6 max-w-2xl mx-auto">
