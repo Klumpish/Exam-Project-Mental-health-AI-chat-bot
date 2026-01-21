@@ -153,7 +153,7 @@ Next.js, Spring Boot, and GPT4All for local AI processing.
 
 ```bash
 git clone https://github.com/Klumpish/Exam-Project-Mental-health-AI-chat-bot.git
-cd mental-health-chatbot
+cd Exam-Project-Mental-health-AI-chat-bot
 ```
 
 **Step 2: Start GPT4All API**
@@ -165,14 +165,43 @@ cd mental-health-chatbot
 5. Set port to **4891** (default)
 6. Download and select a model (Mistral Instruct recommended)
 
-**Step 3: Run the setup Docker-compose script**
+**Step 3: Create `.env` file**
+
+1. Copy `.env.example` to `.env`
+2. Generate a `JWT_SECRET` Value.
+
+   The following commands will generate a secure random value:
+
+   - **Linux / macOS** (terminal): 
+   ```bash
+   openssl rand -base64 64
+   ```
+   
+   - **Windows** (PowerShell): 
+   ```powershell   
+      $bytes = New-Object byte[] 64
+     [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+     [Convert]::ToBase64String($bytes)
+     ```
+    - **Any OS** (Node.js):  
+    ```bash
+   node -e "console.log(require('crypto').randomBytes(64).toString('base64'))"
+     ```
+
+   
+3. Update your`JWT_SECRET=` with the generated value
+
+**Step 4: Run the setup Docker-compose**
 
 ```bash
-# how to run the docer-compose script
+# How to run the docker-compose
 docker-compose up -d
+
+# To remove all containers and volumes
+docker-compose down -v
 ```
 
-**Step 4: Access the application**
+**Step 5: Access the application**
 
 - Frontend: http://localhost:3000
 - Backend: http://localhost:8080
@@ -239,6 +268,8 @@ EOF
 Backend should now be running on **http://localhost:8080**
 
 #### **3. Setup Frontend**
+<details>
+<summary><strong>Frontend setup & environment variables</strong></summary>
 
 ```bash
 cd frontend
@@ -254,7 +285,7 @@ EOF
 # Run development server
 npm run dev
 ```
-
+</details>
 Frontend should now be running on **http://localhost:3000**
 
 #### **4. Setup GPT4All API**
@@ -271,6 +302,8 @@ Frontend should now be running on **http://localhost:3000**
 ### Environment Variables
 
 #### Backend (`.env`)
+<details>
+<summary>Backend .env setup</summary>
 
 ```bash
 DB_URL=jdbc:postgresql://localhost:5432/mental_health_db
@@ -285,6 +318,7 @@ JWT_EXPIRATION=86400000       # 24 hours in milliseconds
 SERVER_PORT=8080
 CORS_ALLOWED_ORIGINS=http://localhost:3000
 ```
+</details>
 
 #### Frontend (`.env.local`)
 
@@ -297,7 +331,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8080
 **Recommended Settings:**
 
 - **Model:** Mistral 7B Instruct (good balance of speed and quality)
-- **Max Tokens:** 50 (adjust based on desired response length)
+- **Max Tokens:** 150 (adjust based on desired response length)
 - **Temperature:** 0.7 (0.5 for more consistent, 0.9 for more creative)
 
 ---
