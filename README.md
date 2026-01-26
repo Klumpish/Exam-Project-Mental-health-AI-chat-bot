@@ -53,7 +53,7 @@ Next.js, Spring Boot, and GPT4All for local AI processing.
 
 ### Frontend
 
-- **Framework:** Next.js 15 (React 18)
+- **Framework:** Next.js 15 (React 19)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS 4.0
 - **HTTP Client:** Fetch API
@@ -61,8 +61,8 @@ Next.js, Spring Boot, and GPT4All for local AI processing.
 
 ### Backend
 
-- **Framework:** Spring Boot 2.7.14
-- **Language:** Java 17
+- **Framework:** Spring Boot 3.5.7
+- **Language:** Java 21
 - **Build Tool:** Maven
 - **Security:** Spring Security + JWT
 - **Password Hashing:** BCrypt
@@ -118,13 +118,15 @@ Next.js, Spring Boot, and GPT4All for local AI processing.
     - Docker: [Install Docker](https://docs.docker.com/get-docker/)
     - Docker Compose: [Install Docker Compose](https://docs.docker.com/compose/install/)
 
+⚠️ **Note**: If Docker is used, only Docker is required locally.
+
 **OR (for manual setup):**
 
-2. **Node.js 18+**
+2. **Node.js 18+ (20+ recommended)**
     - [Download Node.js](https://nodejs.org/)
     - Verify: `node --version`
 
-3. **Java 17+**
+3. **Java 21+**
     - [Download Java JDK](https://www.oracle.com/java/technologies/downloads/)
     - Verify: `java --version`
 
@@ -158,13 +160,19 @@ cd Exam-Project-Mental-health-AI-chat-bot
 
 **Step 2: Start GPT4All API**
 
-1. Open GPT4All Desktop application
-2. Go to **Settings** > **Application**
+1. Open the **GPT4All Desktop** application
+2. Go to **Settings** → **Application**
 3. Scroll to **Advanced**
-4. Check **"Enable Local API Server"**
-5. Set port to **4891** (default)
-6. Download and select a model (Mistral Instruct recommended)
-
+4. Enable **"Local API Server"**
+5. Set the port to **4891** (default)
+6. Go to the **Models** tab:
+    - Press the **Add model** button then
+    - in the **GPT4ALL** tab, scroll down until you find the model.
+        - Download the model **Mistral Instruct** - with 7B parameters
+    - Select the downloaded model as the active model
+7. Make sure the API server is running before continuing
+   - `http://localhost:4891/v1/models` should return a list of models
+   
 **Step 3: Create `.env` file**
 
 1. Copy `.env.example` to `.env`
@@ -413,17 +421,18 @@ npm run dev
 
 ```
 mental-health-chatbot/
-├── backend/                    # Spring Boot backend
+├── backend/backend                    # Spring Boot backend
 │   ├── src/
 │   │   └── main/
-│   │       ├── java/com/chatbot/
+│   │       ├── java/org/chatbot/
 │   │       │   ├── controller/     # REST controllers
 │   │       │   ├── service/        # Business logic
 │   │       │   ├── model/          # JPA entities
 │   │       │   ├── repository/     # Data access
 │   │       │   ├── security/       # JWT & auth
 │   │       │   ├── dto/            # Data transfer objects
-│   │       │   └── config/         # Configuration
+│   │       │   ├── config/         # Configuration
+|   |       |   └── AiService/      # AI service
 │   │       └── resources/
 │   │           └── application.properties
 │   │
@@ -432,33 +441,36 @@ mental-health-chatbot/
 │   └── .env                    # Environment variables
 │
 ├── frontend/                   # Next.js frontend
-│   ├── pages/                  # Next.js pages
-│   │   ├── index.tsx          # Homepage
-│   │   ├── login.tsx          # Login page
-│   │   ├── register.tsx       # Registration
-│   │   ├── chat.tsx           # Chat interface
-│   │   ├── journal.tsx        # Journal page
-│   │   └── mood.tsx           # Mood tracker
-│   ├── components/            # React components
-│   │   ├── Navigation.tsx
-│   │   ├── ChatBox.tsx
-│   │   ├── MessageBubble.tsx
-│   │   ├── MoodTracker.tsx
-│   │   └── ProtectedRoute.tsx
-│   ├── services/              # API services
-│   │   ├── authService.ts
-│   │   ├── chatService.ts
-│   │   ├── journalService.ts
-│   │   └── moodService.ts
-│   ├── styles/
-│   │   └── globals.css        # Global styles
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── .env.local             # Environment variables
+|   ├── src/
+|   │ ├── app/
+|   │ │ ├── chat/ # Chat page
+|   │ │ ├── journal/ # Journal page
+|   │ │ ├── login/ # Login page
+|   │ │ ├── mood/ # Mood tracker page
+|   │ │ ├── register/ # Registration page
+|   │ │ └── page.tsx # Homepage
+|   │ │
+|   │ ├── components/ # Reusable React components
+|   │ │ ├── Navigation.tsx
+|   │ │ ├── CrisisBox.tsx
+|   │ │ ├── InfoBox.tsx
+|   │ │ ├── ChatBox.tsx
+|   │ │ ├── MessageBubble.tsx
+|   │ │ ├── MoodTracker.tsx
+|   │ │ └── ProtectedRoute.tsx
+|   │ │
+|   │ └── services/ # API / backend communication
+|   │ ├── authService.ts
+|   │ ├── chatService.ts
+|   │ ├── journalService.ts
+|   │ └── moodService.ts
+|   │
+|   ├── Dockerfile
+|   ├── package.json
+|   ├── .env.local
+|   └── next.config.ts
 │
 ├── docker-compose.yml         # Docker orchestration
-├── docker-setup.sh            # Setup script
 ├── README.md                  # This file
 └── .gitignore
 ```
